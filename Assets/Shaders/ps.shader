@@ -39,7 +39,8 @@ Shader "Unlit/test2"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex) * o.vertex.w;
+                o.vertex = floor(o.vertex * 200) / 200;
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex) * lerp(o.vertex.w, 1.0, 0.5);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -47,10 +48,10 @@ Shader "Unlit/test2"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv / i.vertex.w);
+                fixed4 col = tex2D(_MainTex, i.uv / lerp(i.vertex.w, 1.0, 0.5));
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                return floor(col * 32) / 32;
             }
             ENDCG
         }
