@@ -1,0 +1,5 @@
+Graficos de PS1 - Pikuma PS1
+Teselacion - https://catlikecoding.com/unity/tutorials/advanced-rendering/tessellation/
+Como se corrige la perspectiva - https://en.wikipedia.org/wiki/Texture_mapping
+
+Arthur - Ayuda con Unity
