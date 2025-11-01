@@ -63,10 +63,14 @@ Shader "Unlit/test2"
             InterpolatorsVertex vert (VertexData v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.vertex = floor(o.vertex * 200) / 200;
+
+                o.vertex = mul(UNITY_MATRIX_MV, v.vertex);
+
+                o.vertex = floor(o.vertex * 75) / 75;
+
+                o.vertex = mul(UNITY_MATRIX_P, o.vertex);
+
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex) * lerp(o.vertex.w, 1.0, 0.5);
-                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
@@ -114,8 +118,6 @@ Shader "Unlit/test2"
             {
                 // sample the texture
                 fixed4 col = QuantizeColor(tex2D(_MainTex, i.uv / lerp(i.vertex.w, 1.0, 0.5)), 32);
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
                 return lerp(col * 0.3, fixed4(0.1, 0.1, 0.1, 0.1), i.vertex.w / 15.0);
             }
             ENDCG
