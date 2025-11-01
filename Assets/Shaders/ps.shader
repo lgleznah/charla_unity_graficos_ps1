@@ -3,6 +3,7 @@ Shader "Unlit/test2"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _LightPos ("Light position", Vector) = (0, 0, 0, 0)
     }
     SubShader
     {
@@ -45,6 +46,8 @@ Shader "Unlit/test2"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+
+            float4 _LightPos;
 
             TessellationControlPoint MyTessellationVertexProgram (VertexData v) {
 	            TessellationControlPoint p;
@@ -114,7 +117,7 @@ Shader "Unlit/test2"
                 fixed4 col = QuantizeColor(tex2D(_MainTex, i.uv / i.vertex.w), 32);
 
                 // Hardcoded light position
-                float3 lightPos = float3(1.735, 2.814, 8.395);
+                float3 lightPos = _LightPos.xyz;
 
                 // Compute lighting
                 float3 dpdx = ddx(i.world);
