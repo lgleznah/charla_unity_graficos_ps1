@@ -16,8 +16,6 @@ Shader "Unlit/test2"
             #pragma fragment frag
             #pragma hull hull
             #pragma domain MyDomainProgram
-            // make fog work
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -35,19 +33,14 @@ Shader "Unlit/test2"
             struct TessellationControlPoint {
 	            float4 vertex : INTERNALTESSPOS;
 	            float2 uv : TEXCOORD0;
+                //float3 world: TEXCOORD1;
             };
 
             struct InterpolatorsVertex {
 	            float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
-            };
+                float3 world: TEXCOORD1;
 
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
-                float4 vertex : SV_POSITION;
             };
 
             sampler2D _MainTex;
@@ -62,7 +55,7 @@ Shader "Unlit/test2"
 
             InterpolatorsVertex vert (VertexData v)
             {
-                v2f o;
+                InterpolatorsVertex o;
 
                 o.vertex = mul(UNITY_MATRIX_MV, v.vertex);
 
@@ -71,6 +64,7 @@ Shader "Unlit/test2"
                 o.vertex = mul(UNITY_MATRIX_P, o.vertex);
 
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex) * o.vertex.w;
+                o.world = mul(unity_ObjectToWorld, v.vertex);
                 return o;
             }
 
@@ -118,7 +112,19 @@ Shader "Unlit/test2"
             {
                 // sample the texture
                 fixed4 col = QuantizeColor(tex2D(_MainTex, i.uv / i.vertex.w), 32);
-                return lerp(col * 0.3, fixed4(0.1, 0.1, 0.1, 0.1), i.vertex.w / 15.0);
+
+                // Hardcoded light position
+                float3 lightPos = float3(1.735, 2.814, 8.395);
+
+                // Compute lighting
+                float3 dpdx = ddx(i.world);
+	            float3 dpdy = ddy(i.world);
+	            float3 normal = normalize(cross(dpdy, dpdx));
+                float3 lightVec = lightPos - i.world;
+                float light = max(0, dot(normal, normalize(lightVec)));
+                float attenuation = 1.0 / dot(lightVec, lightVec);
+
+                return lerp(col*0.03 + col*light*attenuation, fixed4(0.0, 0.0, 0.0, 0.0), i.vertex.w / 10.0);
             }
             ENDCG
         }

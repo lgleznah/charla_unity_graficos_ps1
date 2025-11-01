@@ -2,4 +2,7 @@ Mapeado de texturas afin
 Filtrado lineal
 Baja resolucion de colores
 Baja resolucion de pantalla
-Teselacion
+Teselacion por distancia
+Limitar framerate
+Controles de tanqueta
+Flat shading
