@@ -113,10 +113,10 @@ Shader "Unlit/test2"
             fixed4 frag (InterpolatorsVertex i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv / lerp(i.vertex.w, 1.0, 0.5));
+                fixed4 col = QuantizeColor(tex2D(_MainTex, i.uv / lerp(i.vertex.w, 1.0, 0.5)), 32);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return QuantizeColor(lerp(col * 0.3, fixed4(0.1, 0.1, 0.1, 0.1), i.vertex.w / 30.0), 32);
+                return lerp(col * 0.3, fixed4(0.1, 0.1, 0.1, 0.1), i.vertex.w / 15.0);
             }
             ENDCG
         }
