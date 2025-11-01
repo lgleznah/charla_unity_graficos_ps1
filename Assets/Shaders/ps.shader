@@ -70,7 +70,7 @@ Shader "Unlit/test2"
 
                 o.vertex = mul(UNITY_MATRIX_P, o.vertex);
 
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex) * lerp(o.vertex.w, 1.0, 0.5);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex) * o.vertex.w;
                 return o;
             }
 
@@ -117,7 +117,7 @@ Shader "Unlit/test2"
             fixed4 frag (InterpolatorsVertex i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = QuantizeColor(tex2D(_MainTex, i.uv / lerp(i.vertex.w, 1.0, 0.5)), 32);
+                fixed4 col = QuantizeColor(tex2D(_MainTex, i.uv / i.vertex.w), 32);
                 return lerp(col * 0.3, fixed4(0.1, 0.1, 0.1, 0.1), i.vertex.w / 15.0);
             }
             ENDCG
