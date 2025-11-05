@@ -4,6 +4,7 @@ Shader "Unlit/test2"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _LightPos ("Light position", Vector) = (0, 0, 0, 0)
+        _TessellationEdgeLength ("Tesselation edge length", Float) = 0.0
     }
     SubShader
     {
@@ -34,7 +35,6 @@ Shader "Unlit/test2"
             struct TessellationControlPoint {
 	            float4 vertex : INTERNALTESSPOS;
 	            float2 uv : TEXCOORD0;
-                //float3 world: TEXCOORD1;
             };
 
             struct InterpolatorsVertex {
@@ -48,6 +48,7 @@ Shader "Unlit/test2"
             float4 _MainTex_ST;
 
             float4 _LightPos;
+            float _TessellationEdgeLength;
 
             TessellationControlPoint MyTessellationVertexProgram (VertexData v) {
 	            TessellationControlPoint p;
@@ -81,12 +82,25 @@ Shader "Unlit/test2"
 	            return patch[id];
             }
 
+            float TessellationEdgeFactor (
+	            TessellationControlPoint cp0, TessellationControlPoint cp1
+            ) {
+	            float3 p0 = mul(unity_ObjectToWorld, float4(cp0.vertex.xyz, 1)).xyz;
+		        float3 p1 = mul(unity_ObjectToWorld, float4(cp1.vertex.xyz, 1)).xyz;
+		        float edgeLength = distance(p0, p1);
+
+		        float3 edgeCenter = (p0 + p1) * 0.5;
+		        float viewDistance = distance(edgeCenter, _WorldSpaceCameraPos);
+
+		        return edgeLength * _ScreenParams.y / (_TessellationEdgeLength * viewDistance);
+            }
+
             TessellationFactors MyPatchConstantFunction (InputPatch<TessellationControlPoint , 3> patch) {
 	            TessellationFactors f;
-                f.edge[0] = 2;
-                f.edge[1] = 2;
-                f.edge[2] = 2;
-	            f.inside = 2;
+                f.edge[0] = TessellationEdgeFactor(patch[1], patch[2]);
+                f.edge[1] = TessellationEdgeFactor(patch[0], patch[2]);
+                f.edge[2] = TessellationEdgeFactor(patch[0], patch[1]);
+	            f.inside = (f.edge[0] + f.edge[1] + f.edge[2]) * (1 / 3.0);;
 	            return f;
             }
 
