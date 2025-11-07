@@ -2,5 +2,7 @@ Graficos de PS1 - Pikuma PS1
 Teselacion - https://catlikecoding.com/unity/tutorials/advanced-rendering/tessellation/
 Como se corrige la perspectiva - https://en.wikipedia.org/wiki/Texture_mapping
 FPS controller - https://assetstore.unity.com/packages/3d/characters/modular-first-person-controller-189884
+Postproceso cámara - https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-features/how-to-fullscreen-blit.html
+Efecto CRT - https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc
 
 Arthur - Ayuda con Unity
