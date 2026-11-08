@@ -32,12 +32,14 @@ Shader "ColorBlit"
 
                 // CRT curvature
                 float2 uv = input.texcoord*2-1;
-                float lf = 1./(pow(length(uv), 3.)*.1 + 1.);
-                uv /= lf;
+                float lf = (pow(length(uv), 3.)*.1 + 1.);
+                uv *= lf;
                 uv = uv *.5 + .5;
 
                 float4 color = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, uv);
-                color = (max(uv.x, uv.y) > 1. || min(uv.x, uv.y) < 0.) ? float4(0,0,0,0) : color;
+                color = (max(uv.x, uv.y) > 1. || min(uv.x, uv.y) < 0.) ? float4(0.2,0.2,0.2,0.2) : color;
+
+                if (max(uv.x, uv.y) > 1. || min(uv.x, uv.y) < 0.) return float4(0.2,0.2,0.2,0.2);
 
                 // CRT bands
                 color *= sin(uv.x*1000.0)*.1+.9;
