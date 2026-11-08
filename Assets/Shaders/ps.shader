@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Unlit/test2"
+Shader "Unlit/psx"
 {
     Properties
     {
@@ -46,7 +46,7 @@ Shader "Unlit/test2"
                 float4 vertex : SV_POSITION;
                 float3 world: TEXCOORD1;
                 float3 normal : NORMAL;
-                float  depth : TEXCOORD2;
+                nointerpolation float  depth : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -59,7 +59,7 @@ Shader "Unlit/test2"
 	            TessellationControlPoint p;
 	            p.vertex = v.vertex;
 	            p.uv = v.uv;
-                p.normal = v.normal;
+                    p.normal = v.normal;
 	            return p;
             }
 
@@ -72,11 +72,12 @@ Shader "Unlit/test2"
                 o.vertex = floor(o.vertex * 300) / 300;
 
                 o.vertex = mul(UNITY_MATRIX_P, o.vertex);
-
+		o.vertex.xy = floor(((o.vertex.xy + 1.0) / 2.0 )*_ScreenParams)/_ScreenParams * 2.0 - 1.0;
 
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex) * o.vertex.w;
                 o.world = mul(unity_ObjectToWorld, v.vertex);
                 o.normal = v.normal;
+		o.depth = o.vertex.z / o.vertex.w;
 
                 return o;
             }
@@ -135,7 +136,7 @@ Shader "Unlit/test2"
                 return floor((color * 255 + dither) / 8) / 32;
             }
 
-            fixed4 frag (InterpolatorsVertex i) : SV_Target
+            fixed4 frag (InterpolatorsVertex i, out float depth : SV_DEPTH) : SV_Target
             {
                 const int4x4 dither = int4x4(
                     -4, 0, -3, 1,
@@ -165,7 +166,9 @@ Shader "Unlit/test2"
                 float light = max(0, dot(normal, normalize(lightVec)));
                 float attenuation = 1.0 / dot(lightVec, lightVec);
 
+		depth = i.depth;
                 return lerp(col*0.3 + col*light*attenuation, fixed4(0.0, 0.0, 0.0, 0.0), i.vertex.w / 10.0);
+		//return depth;
             }
             ENDCG
         }
