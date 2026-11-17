@@ -4,7 +4,5 @@ Como se corrige la perspectiva - https://en.wikipedia.org/wiki/Texture_mapping
 FPS controller - https://assetstore.unity.com/packages/3d/characters/modular-first-person-controller-189884
 Postproceso cámara - https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-features/how-to-fullscreen-blit.html
 Efecto CRT - https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc
-Dithering - https://www.youtube.com/watch?v=y84bG19sg6U
-Algoritmo del artista - https://jettelly.com/blog/recreating-the-ps1-s-rendering-quirks-in-godot
 
 Arthur - Ayuda con Unity
