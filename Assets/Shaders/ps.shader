@@ -72,12 +72,12 @@ Shader "Unlit/psx"
                 o.vertex = floor(o.vertex * 300) / 300;
 
                 o.vertex = mul(UNITY_MATRIX_P, o.vertex);
-		o.vertex.xy = floor(((o.vertex.xy + 1.0) / 2.0 )*_ScreenParams)/_ScreenParams * 2.0 - 1.0;
+		        o.vertex.xy = floor(((o.vertex.xy + 1.0) / 2.0 )*_ScreenParams)/_ScreenParams * 2.0 - 1.0;
 
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex) * o.vertex.w;
                 o.world = mul(unity_ObjectToWorld, v.vertex);
                 o.normal = v.normal;
-		o.depth = o.vertex.z / o.vertex.w;
+		        o.depth = o.vertex.z / o.vertex.w;
 
                 return o;
             }
